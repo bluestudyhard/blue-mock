@@ -13,10 +13,16 @@
     "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
+    "@remixicon/vue": "^4.2.0",
+    "@tiptap/extension-bubble-menu": "^2.2.4",
+    "@tiptap/extension-bullet-list": "^2.2.4",
+    "@tiptap/extension-floating-menu": "^2.2.4",
+    "@tiptap/extension-list-item": "^2.2.4",
     "@tiptap/pm": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
     "@tiptap/vue-3": "^2.2.4",
     "@vueuse/core": "^10.7.2",
+    "remixicon": "^4.2.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },

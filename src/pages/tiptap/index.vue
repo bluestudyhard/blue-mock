@@ -10,9 +10,8 @@
 
 <template>
   <div class="container">
-    <h1>TipTap</h1>
+    <h1 text="center">TipTap default editor</h1>
     <div class="editor">
-      1
       <TipTap />
     </div>
   </div>

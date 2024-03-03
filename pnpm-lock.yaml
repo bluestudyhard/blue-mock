@@ -5,6 +5,21 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@remixicon/vue':
+    specifier: ^4.2.0
+    version: 4.2.0(vue@3.4.15)
+  '@tiptap/extension-bubble-menu':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)
+  '@tiptap/extension-bullet-list':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.2.4)
+  '@tiptap/extension-floating-menu':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.2.4)(@tiptap/pm@2.2.4)
+  '@tiptap/extension-list-item':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.2.4)
   '@tiptap/pm':
     specifier: ^2.2.4
     version: 2.2.4
@@ -17,6 +32,9 @@ dependencies:
   '@vueuse/core':
     specifier: ^10.7.2
     version: 10.7.2(vue@3.4.15)
+  remixicon:
+    specifier: ^4.2.0
+    version: 4.2.0
   vue:
     specifier: ^3.4.15
     version: 3.4.15(typescript@5.3.3)
@@ -1104,6 +1122,14 @@ packages:
     resolution: {integrity: sha512-VlZQxwGnt1jtQ18D6JqdIF+uFZo525WEqrfp9BOc3COPpK4+AWCgdnAWL+ho6imWcoINlGjR/+3b6y5C1vBVEA==}
     dependencies:
       type-fest: 2.19.0
+    dev: false
+
+  /@remixicon/vue@4.2.0(vue@3.4.15):
+    resolution: {integrity: sha512-dFtPQPi45sZ4X3Jl2ZNxEE5j2dAmo8vfHA1wvjUCwybQnyAGKSBVQlqZqP0wKzrtBbVqRXK0tgQx+Fw8GZ45qg==}
+    peerDependencies:
+      vue: '>= 3'
+    dependencies:
+      vue: 3.4.15(typescript@5.3.3)
     dev: false
 
   /@rollup/pluginutils@5.1.0:
@@ -5833,6 +5859,10 @@ packages:
     dependencies:
       jsesc: 0.5.0
     dev: true
+
+  /remixicon@4.2.0:
+    resolution: {integrity: sha512-MF5wApNveRh3n0iMVM+lr2nSWrj/rBbSD2eWapuD9ReYRGs5naAUR1BqVBCHGqm286FIS6zwwmUf96QjHQ9l4w==}
+    dev: false
 
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}

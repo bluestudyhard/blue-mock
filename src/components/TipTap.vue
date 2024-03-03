@@ -1,213 +1,273 @@
-<!-- <script setup>
-import { EditorContent, useEditor } from '@tiptap/vue-3'
+<script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit'
+import type { Editor } from '@tiptap/vue-3'
+import { EditorContent, FloatingMenu, useEditor } from '@tiptap/vue-3'
+import type { EditorView } from 'prosemirror-view'
+import type { EditorState } from 'prosemirror-state'
 
+// import { menuList } from '~/constant/menuList'
+const isMenuVisible = ref(false)
+const menuPost = ref(0)
 const editor = useEditor({
-  content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
+  content: `
+  <h2>Hi there</h2>
+  <p>This is a basic example of Tiptap.</p>
+      `,
   extensions: [
     StarterKit,
+
   ],
+  editable: true, // 是否可编辑
+  autofocus: true, // 自动聚焦 就是页面开始时光标会在编辑器中 start在开头 end在结尾  all 选择整个文档
+  // 输入规则
+
+  onSelectionUpdate: () => {
+    // const selection = editor?.value?.state.selection
+    // const { from, to } = editor.value.state.selection
+    // console.log('selection', selection)
+    // const node = editor.value.state.doc
+    // console.log('node', node)
+    // const view = editor?.value?.view as EditorView
+
+    // // 获取编辑器的内容
+    // const content = editor?.value?.state.doc
+
+    // // 遍历每一行元素
+    // content.forEach((node, offset) => {
+    //   // 获取每一行元素的开始和结束位置
+    //   const startPos = offset
+    //   const endPos = offset + node.nodeSize
+
+    //   // 获取每一行元素的坐标
+    //   const startCoords = view.coordsAtPos(startPos)
+    //   const endCoords = view.coordsAtPos(endPos)
+
+    //   console.log('startCoords', startCoords)
+    //   console.log('endCoords', endCoords)
+    // })
+    // 获取编辑器的状态
+    const state = editor?.value?.state as EditorState
+    // console.log('$doc', editor.value.$doc)
+    // console.log('$node', editor.value.$node)
+    // console.log('$nodes', editor.value.$nodes)
+    // console.log('pos', editor.value.$pos)
+    // console.log('view', editor.value.view)
+    // console.log('state', editor.value.state)
+    // 获取当前选中的元素
+    const selection = state.selection
+
+    // 获取选中元素的开始和结束位置
+    const startPos = selection.from
+
+    // 获取编辑器的视图
+    const view = editor?.value?.view as EditorView
+
+    // 获取选中元素的坐标
+    const startCoords = view.coordsAtPos(startPos)
+    menuPost.value = startCoords.top
+  },
+}) as Ref<Editor>
+const menuList = [
+  {
+    icon: 'bold',
+    title: 'Bold',
+    action: () => editor?.value?.chain().focus().toggleBold().run(),
+    isActive: () => editor?.value?.isActive('bold'),
+  },
+  {
+    icon: 'italic',
+    title: 'Italic',
+    action: () => editor?.value?.chain().focus().toggleItalic().run(),
+    isActive: () => editor?.value?.isActive('italic'),
+  },
+  {
+    icon: 'strikethrough',
+    title: 'Strike',
+    action: () => editor?.value?.chain().focus().toggleStrike().run(),
+    isActive: () => editor?.value?.isActive('strike'),
+  },
+  {
+    icon: 'code-view',
+    title: 'Code',
+    action: () => editor?.value?.chain().focus().toggleCode().run(),
+    isActive: () => editor?.value?.isActive('code'),
+  },
+  {
+    icon: 'mark-pen-line',
+    title: 'Highlight',
+    action: () => editor?.value?.chain().focus().toggleHighlight().run(),
+    isActive: () => editor?.value?.isActive('highlight'),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'h-1',
+    title: 'Heading 1',
+    action: () => editor?.value?.chain().focus().toggleHeading({ level: 1 }).run(),
+    isActive: () => editor?.value?.isActive('heading', { level: 1 }),
+  },
+  {
+    icon: 'h-2',
+    title: 'Heading 2',
+    action: () => editor?.value?.chain().focus().toggleHeading({ level: 2 }).run(),
+    isActive: () => editor?.value?.isActive('heading', { level: 2 }),
+  },
+  {
+    icon: 'paragraph',
+    title: 'Paragraph',
+    action: () => editor?.value?.chain().focus().setParagraph().run(),
+    isActive: () => editor?.value?.isActive('paragraph'),
+  },
+  {
+    icon: 'list-unordered',
+    title: 'Bullet List',
+    action: () => editor?.value?.chain().focus().toggleBulletList().run(),
+    isActive: () => editor?.value?.isActive('bulletList'),
+  },
+  {
+    icon: 'list-ordered',
+    title: 'Ordered List',
+    action: () => editor?.value?.chain().focus().toggleOrderedList().run(),
+    isActive: () => editor?.value?.isActive('orderedList'),
+  },
+  {
+    icon: 'list-check-2',
+    title: 'Task List',
+    action: () => editor?.value?.chain().focus().toggleTaskList().run(),
+    isActive: () => editor?.value?.isActive('taskList'),
+  },
+  {
+    icon: 'code-box-line',
+    title: 'Code Block',
+    action: () => editor?.value?.chain().focus().toggleCodeBlock().run(),
+    isActive: () => editor?.value?.isActive('codeBlock'),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'double-quotes-l',
+    title: 'Blockquote',
+    action: () => editor?.value?.chain().focus().toggleBlockquote().run(),
+    isActive: () => editor?.value?.isActive('blockquote'),
+  },
+  {
+    icon: 'separator',
+    title: 'Horizontal Rule',
+    action: () => editor?.value?.chain().focus().setHorizontalRule().run(),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'text-wrap',
+    title: 'Hard Break',
+    action: () => editor?.value?.chain().focus().setHardBreak().run(),
+  },
+  {
+    icon: 'format-clear',
+    title: 'Clear Format',
+    action: () => editor?.value?.chain()
+      .focus()
+      .clearNodes()
+      .unsetAllMarks()
+      .run(),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'arrow-go-back-line',
+    title: 'Undo',
+    action: () => editor?.value?.chain().focus().undo().run(),
+  },
+  {
+    icon: 'arrow-go-forward-line',
+    title: 'Redo',
+    action: () => editor?.value?.chain().focus().redo().run(),
+  },
+]
+const show = ref(false)
+function handleMenuVisible(visible: boolean) {
+  isMenuVisible.value = visible
+  console.log('visible', visible)
+}
+function shouldShow() {
+  // 只有在编辑器中选择的文本是加粗时才显示
+  return editor?.value?.isActive('bold') && isMenuVisible.value
+}
+watchEffect(() => {
+  show.value = editor?.value?.isActive('heading', { level: 2 })
+})
+onUnmounted(() => {
+  editor?.value?.destroy()
 })
 </script>
 
 <template>
-  <EditorContent :editor="editor" h="10" bg="blue" />
-</template> -->
-<script>
-import StarterKit from '@tiptap/starter-kit'
-import { Editor, EditorContent } from '@tiptap/vue-3'
-
-export default {
-  components: {
-    EditorContent,
-  },
-
-  data() {
-    return {
-      editor: null,
-    }
-  },
-
-  mounted() {
-    this.editor = new Editor({
-      extensions: [
-        StarterKit,
-      ],
-      content: `
-        <h2>
-          Hi there,
-        </h2>
-        <p>
-          this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-        </p>
-        <ul>
-          <li>
-            That’s a bullet list with one …
-          </li>
-          <li>
-            … or two list items.
-          </li>
-        </ul>
-        <p>
-          Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-        </p>
-        <pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-        <p>
-          I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-        </p>
-        <blockquote>
-          Wow, that’s amazing. Good work, boy! 👏
-          <br />
-          — Mom
-        </blockquote>
-      `,
-    })
-  },
-
-  beforeUnmount() {
-    this.editor.destroy()
-  },
-}
-</script>
-
-<template>
-  <div v-if="editor">
-    <button
-      :disabled="!editor.can().chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }"
-      @click="editor.chain().focus().toggleBold().run()"
-    >
-      bold
-    </button>
-    <button
-      :disabled="!editor.can().chain().focus().toggleItalic().run()"
-      :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()"
-    >
-      italic
-    </button>
-    <button
-      :disabled="!editor.can().chain().focus().toggleStrike().run()"
-      :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()"
-    >
-      strike
-    </button>
-    <button
-      :disabled="!editor.can().chain().focus().toggleCode().run()" :class="{ 'is-active': editor.isActive('code') }"
-      @click="editor.chain().focus().toggleCode().run()"
-    >
-      code
-    </button>
-    <button @click="editor.chain().focus().unsetAllMarks().run()">
-      clear marks
-    </button>
-    <button @click="editor.chain().focus().clearNodes().run()">
-      clear nodes
-    </button>
-    <button :class="{ 'is-active': editor.isActive('paragraph') }" @click="editor.chain().focus().setParagraph().run()">
-      paragraph
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-    >
-      h1
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-    >
-      h2
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-    >
-      h3
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-    >
-      h4
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-    >
-      h5
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
-      @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-    >
-      h6
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('bulletList') }"
-      @click="editor.chain().focus().toggleBulletList().run()"
-    >
-      bullet list
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('orderedList') }"
-      @click="editor.chain().focus().toggleOrderedList().run()"
-    >
-      ordered list
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('codeBlock') }"
-      @click="editor.chain().focus().toggleCodeBlock().run()"
-    >
-      code block
-    </button>
-    <button
-      :class="{ 'is-active': editor.isActive('blockquote') }"
-      @click="editor.chain().focus().toggleBlockquote().run()"
-    >
-      blockquote
-    </button>
-    <button @click="editor.chain().focus().setHorizontalRule().run()">
-      horizontal rule
-    </button>
-    <button @click="editor.chain().focus().setHardBreak().run()">
-      hard break
-    </button>
-    <button :disabled="!editor.can().chain().focus().undo().run()" @click="editor.chain().focus().undo().run()">
-      undo
-    </button>
-    <button :disabled="!editor.can().chain().focus().redo().run()" @click="editor.chain().focus().redo().run()">
-      redo
-    </button>
+  <div class="editor-main">
+    <div class="category-tool">
+      侧边工具栏
+      <div v-if="show" class="box" w="10" h="10" bg="black" />
+    </div>
+    <FloatingMenu v-if="editor " :editor="editor" :tippy-options="{ duration: 100 }">
+      <button :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
+        H1
+      </button>
+      <button :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
+        H2
+      </button>
+      <button :class="{ 'is-active': editor.isActive('bulletList') }" @click="editor.chain().focus().toggleBulletList().run()">
+        Bullet List
+      </button>
+    </FloatingMenu>
+    <div v-if="editor" class="editor">
+      <div center justify-start>
+        <template v-for="(item, index) in menuList">
+          <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
+          <MenuItem v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" :menu-pos-top="menuPost" />
+          <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->
+        </template>
+      </div>
+      <EditorContent :editor="editor" h="80vh" />
+    </div>
   </div>
-  <EditorContent :editor="editor" class="border-3 outline-none" />
 </template>
 
-<style lang="scss">
-/* Basic editor styles */
-button {
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #f5f5f5;
+<style scoped lang="scss">
+.remix {
+  width: 24px;
+  height: 24px;
+  fill: #333;
+}
+.editor-main {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  .category-tool {
+    width: 20%;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
   }
-
-  &.is-active {
-    background: #f5f5f5;
+  .editor {
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    width: 80%;
   }
 }
+</style>
 
+<style  lang="scss">
+/* Basic editor styles */
 .tiptap {
   > * + * {
     margin-top: 0.75em;
   }
-
+  border: 1px solid #e2e8f0;
+  outline-color: #93b7f4;
+  height: 100%;
+  padding: 0.2rem;
   ul,
   ol {
     padding: 0 1rem;
@@ -259,3 +319,108 @@ button {
   }
 }
 </style>
+<!-- <button
+:disabled="!editor.can().chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }"
+@click="editor.chain().focus().toggleBold().run()"
+>
+bold
+</button>
+<button
+:disabled="!editor.can().chain().focus().toggleItalic().run()"
+:class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()"
+>
+italic
+</button>
+<button
+:disabled="!editor.can().chain().focus().toggleStrike().run()"
+:class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()"
+>
+strike
+</button>
+<button
+:disabled="!editor.can().chain().focus().toggleCode().run()" :class="{ 'is-active': editor.isActive('code') }"
+@click="editor.chain().focus().toggleCode().run()"
+>
+code
+</button>
+<button @click="editor.chain().focus().unsetAllMarks().run()">
+clear marks
+</button>
+<button @click="editor.chain().focus().clearNodes().run()">
+clear nodes
+</button>
+<button :class="{ 'is-active': editor.isActive('paragraph') }" @click="editor.chain().focus().setParagraph().run()">
+paragraph
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+>
+h1
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+>
+h2
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 3 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+>
+h3
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 4 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
+>
+h4
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 5 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
+>
+h5
+</button>
+<button
+:class="{ 'is-active': editor.isActive('heading', { level: 6 }) }"
+@click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
+>
+h6
+</button>
+<button
+:class="{ 'is-active': editor.isActive('bulletList') }"
+@click="editor.chain().focus().toggleBulletList().run()"
+>
+bullet list
+</button>
+<button
+:class="{ 'is-active': editor.isActive('orderedList') }"
+@click="editor.chain().focus().toggleOrderedList().run()"
+>
+ordered list
+</button>
+<button
+:class="{ 'is-active': editor.isActive('codeBlock') }"
+@click="editor.chain().focus().toggleCodeBlock().run()"
+>
+code block
+</button>
+<button
+:class="{ 'is-active': editor.isActive('blockquote') }"
+@click="editor.chain().focus().toggleBlockquote().run()"
+>
+blockquote
+</button>
+<button @click="editor.chain().focus().setHorizontalRule().run()">
+horizontal rule
+</button>
+<button @click="editor.chain().focus().setHardBreak().run()">
+hard break
+</button>
+<button :disabled="!editor.can().chain().focus().undo().run()" @click="editor.chain().focus().undo().run()">
+undo
+</button>
+<button :disabled="!editor.can().chain().focus().redo().run()" @click="editor.chain().focus().redo().run()">
+redo
+</button> -->

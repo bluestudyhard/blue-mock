@@ -1,6 +1,10 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
-  <main font-sans p="x-4 y-10" text="center  gray-700 dark:gray-200" bg="white" h="full">
-    <nav class="fixed w-full center" top="0">
+  <div class="container">
+    <nav class="fixed w-100% center" top="0">
       <ul flex justify="center" gap="x-4">
         <li>
           <router-link to="/">
@@ -12,8 +16,22 @@
             TipTap
           </router-link>
         </li>
+        <li>
+          <router-link to="/collaborative">
+            Collaborative
+          </router-link>
+        </li>
       </ul>
     </nav>
-    <RouterView />
-  </main>
+    <main p="x-12 y-12" text="  gray-700 dark:gray-200" bg="white" h="full">
+      <RouterView />
+    </main>
+  </div>
 </template>
+
+<style scoped lang="scss">
+ol,
+ul {
+  list-style: none !important;
+}
+</style>
