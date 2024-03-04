@@ -1,161 +1,180 @@
-<script>
-import MenuItem from './MenuItem.vue'
+<!--
+ * new page
+ * @author: blue
+ * @since: 2024-03-04
+ * MenuBar.vue
+-->
 
-export default {
-  components: {
-    MenuItem,
-  },
+<script setup lang="ts">
+import type { Editor } from '@tiptap/vue-3'
+import remixiconUrl from '/fonts/remixicon.symbol.svg'
 
-  props: {
-    editor: {
-      type: Object,
-      required: true,
-    },
+const editor = inject<Editor>('editor')
+const menuList = [
+  {
+    icon: 'bold',
+    title: 'Bold',
+    action: () => editor?.value.chain().focus().toggleBold().run(),
+    isActive: () => editor.value.isActive('bold'),
   },
-
-  data() {
-    return {
-      items: [
-        {
-          icon: 'bold',
-          title: 'Bold',
-          action: () => this.editor.chain().focus().toggleBold().run(),
-          isActive: () => this.editor.isActive('bold'),
-        },
-        {
-          icon: 'italic',
-          title: 'Italic',
-          action: () => this.editor.chain().focus().toggleItalic().run(),
-          isActive: () => this.editor.isActive('italic'),
-        },
-        {
-          icon: 'strikethrough',
-          title: 'Strike',
-          action: () => this.editor.chain().focus().toggleStrike().run(),
-          isActive: () => this.editor.isActive('strike'),
-        },
-        {
-          icon: 'code-view',
-          title: 'Code',
-          action: () => this.editor.chain().focus().toggleCode().run(),
-          isActive: () => this.editor.isActive('code'),
-        },
-        {
-          icon: 'mark-pen-line',
-          title: 'Highlight',
-          action: () => this.editor.chain().focus().toggleHighlight().run(),
-          isActive: () => this.editor.isActive('highlight'),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'h-1',
-          title: 'Heading 1',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 1 }),
-        },
-        {
-          icon: 'h-2',
-          title: 'Heading 2',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 2 }),
-        },
-        {
-          icon: 'paragraph',
-          title: 'Paragraph',
-          action: () => this.editor.chain().focus().setParagraph().run(),
-          isActive: () => this.editor.isActive('paragraph'),
-        },
-        {
-          icon: 'list-unordered',
-          title: 'Bullet List',
-          action: () => this.editor.chain().focus().toggleBulletList().run(),
-          isActive: () => this.editor.isActive('bulletList'),
-        },
-        {
-          icon: 'list-ordered',
-          title: 'Ordered List',
-          action: () => this.editor.chain().focus().toggleOrderedList().run(),
-          isActive: () => this.editor.isActive('orderedList'),
-        },
-        {
-          icon: 'list-check-2',
-          title: 'Task List',
-          action: () => this.editor.chain().focus().toggleTaskList().run(),
-          isActive: () => this.editor.isActive('taskList'),
-        },
-        {
-          icon: 'code-box-line',
-          title: 'Code Block',
-          action: () => this.editor.chain().focus().toggleCodeBlock().run(),
-          isActive: () => this.editor.isActive('codeBlock'),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'double-quotes-l',
-          title: 'Blockquote',
-          action: () => this.editor.chain().focus().toggleBlockquote().run(),
-          isActive: () => this.editor.isActive('blockquote'),
-        },
-        {
-          icon: 'separator',
-          title: 'Horizontal Rule',
-          action: () => this.editor.chain().focus().setHorizontalRule().run(),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'text-wrap',
-          title: 'Hard Break',
-          action: () => this.editor.chain().focus().setHardBreak().run(),
-        },
-        {
-          icon: 'format-clear',
-          title: 'Clear Format',
-          action: () => this.editor.chain()
-            .focus()
-            .clearNodes()
-            .unsetAllMarks()
-            .run(),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          icon: 'arrow-go-back-line',
-          title: 'Undo',
-          action: () => this.editor.chain().focus().undo().run(),
-        },
-        {
-          icon: 'arrow-go-forward-line',
-          title: 'Redo',
-          action: () => this.editor.chain().focus().redo().run(),
-        },
-      ],
-    }
+  {
+    icon: 'italic',
+    title: 'Italic',
+    action: () => editor.value.chain().focus().toggleItalic().run(),
+    isActive: () => editor.isActive('italic'),
   },
-}
+  {
+    icon: 'strikethrough',
+    title: 'Strike',
+    action: () => editor.value.chain().focus().toggleStrike().run(),
+    isActive: () => editor.value.isActive('strike'),
+  },
+  {
+    icon: 'code-view',
+    title: 'Code',
+    action: () => editor.value.chain().focus().toggleCode().run(),
+    isActive: () => editor.value.isActive('code'),
+  },
+  {
+    icon: 'mark-pen-line',
+    title: 'Highlight',
+    action: () => editor.value.chain().focus().toggleHighlight().run(),
+    isActive: () => editor.value.isActive('highlight'),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'h-1',
+    title: 'Heading 1',
+    action: () => editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
+    isActive: () => editor.value.isActive('heading', { level: 1 }),
+  },
+  {
+    icon: 'h-2',
+    title: 'Heading 2',
+    action: () => editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
+    isActive: () => editor.value.isActive('heading', { level: 2 }),
+  },
+  {
+    icon: 'paragraph',
+    title: 'Paragraph',
+    action: () => editor.value.chain().focus().setParagraph().run(),
+    isActive: () => editor.value.isActive('paragraph'),
+  },
+  {
+    icon: 'list-unordered',
+    title: 'Bullet List',
+    action: () => editor.value.chain().focus().toggleBulletList().run(),
+    isActive: () => editor.value.isActive('bulletList'),
+  },
+  {
+    icon: 'list-ordered',
+    title: 'Ordered List',
+    action: () => editor.value.chain().focus().toggleOrderedList().run(),
+    isActive: () => editor.value.isActive('orderedList'),
+  },
+  {
+    icon: 'list-check-2',
+    title: 'Task List',
+    action: () => editor.value.chain().focus().toggleTaskList().run(),
+    isActive: () => editor.value.isActive('taskList'),
+  },
+  {
+    icon: 'code-box-line',
+    title: 'Code Block',
+    action: () => editor.value.chain().focus().toggleCodeBlock().run(),
+    isActive: () => editor.value.isActive('codeBlock'),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'double-quotes-l',
+    title: 'Blockquote',
+    action: () => editor.value.chain().focus().toggleBlockquote().run(),
+    isActive: () => editor.value.isActive('blockquote'),
+  },
+  {
+    icon: 'separator',
+    title: 'Horizontal Rule',
+    action: () => editor.value.chain().focus().setHorizontalRule().run(),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'text-wrap',
+    title: 'Hard Break',
+    action: () => editor.value.chain().focus().setHardBreak().run(),
+  },
+  {
+    icon: 'format-clear',
+    title: 'Clear Format',
+    action: () => editor.value.chain()
+      .focus()
+      .clearNodes()
+      .unsetAllMarks()
+      .run(),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    icon: 'arrow-go-back-line',
+    title: 'Undo',
+    action: () => editor.value.chain().focus().undo().run(),
+  },
+  {
+    icon: 'arrow-go-forward-line',
+    title: 'Redo',
+    action: () => editor.value.chain().focus().redo().run(),
+  },
+]
 </script>
 
 <template>
-  <div>
-    <template v-for="(item, index) in items">
-      <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" />
-      <MenuItem v-else :key="index" v-bind="item" />
-    </template>
+  <div class="h-30 w-20 container">
+    <div flex w="40" class="flex-wrap">
+      <template v-for="(item, index) in menuList">
+        <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
+        <button
+          v-else :key="index" class="menu-item-bar" :class="{ 'is-active': isActive ? item.isActive : false }"
+          :title="item.title" @click="item.action"
+        >
+          <svg class="remix">
+            <use :xlink:href="`${remixiconUrl}#ri-${item.icon}`" />
+          </svg>
+        </button>
+      <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->
+      </template>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
-.divider {
-  background-color: rgba(#fff, 0.25);
-  height: 1.25rem;
-  margin-left: 0.5rem;
-  margin-right: 0.75rem;
-  width: 1px;
+<style scoped lang="scss">
+.menu-item-bar {
+  background: #f6f9f9;
+  color: #252525;
+  border: none;
+  border-radius: 0.4rem;
+
+  cursor: pointer;
+  height: 1.75rem;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+  width: 1.75rem;
+
+  svg {
+    fill: currentColor;
+    height: 100%;
+    width: 100%;
+  }
+
+  &.is-active,
+  &:hover {
+    color: #4177f4;
+    background-color: #e0e9ff;
+  }
 }
 </style>

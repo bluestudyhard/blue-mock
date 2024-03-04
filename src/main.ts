@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import App from './App.vue'
-
+import 'tippy.js/dist/tippy.css';
 import './styles/main.scss'
 import 'uno.css'
 

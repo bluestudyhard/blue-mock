@@ -7,7 +7,8 @@ import type { EditorState } from 'prosemirror-state'
 
 // import { menuList } from '~/constant/menuList'
 const isMenuVisible = ref(false)
-const menuPost = ref(0)
+const menuPost = ref({ left: 0, top: 0 })
+
 const editor = useEditor({
   content: `
   <h2>Hi there</h2>
@@ -45,6 +46,7 @@ const editor = useEditor({
     //   console.log('startCoords', startCoords)
     //   console.log('endCoords', endCoords)
     // })
+
     // 获取编辑器的状态
     const state = editor?.value?.state as EditorState
     // console.log('$doc', editor.value.$doc)
@@ -61,11 +63,15 @@ const editor = useEditor({
 
     // 获取编辑器的视图
     const view = editor?.value?.view as EditorView
+    const editorElement = view.dom
+    const editorleft = editorElement.offsetLeft
+    menuPost.value.left = editorleft - 30
 
     // 获取选中元素的坐标
     const startCoords = view.coordsAtPos(startPos)
-    menuPost.value = startCoords.top
+    menuPost.value.top = startCoords.top
   },
+
 }) as Ref<Editor>
 const menuList = [
   {
@@ -189,10 +195,7 @@ const menuList = [
   },
 ]
 const show = ref(false)
-function handleMenuVisible(visible: boolean) {
-  isMenuVisible.value = visible
-  console.log('visible', visible)
-}
+
 function shouldShow() {
   // 只有在编辑器中选择的文本是加粗时才显示
   return editor?.value?.isActive('bold') && isMenuVisible.value
@@ -200,25 +203,40 @@ function shouldShow() {
 watchEffect(() => {
   show.value = editor?.value?.isActive('heading', { level: 2 })
 })
+onMounted(() => {
+
+})
+
 onUnmounted(() => {
   editor?.value?.destroy()
 })
+provide('editor', editor)
 </script>
 
 <template>
   <div class="editor-main">
     <div class="category-tool">
       侧边工具栏
-      <div v-if="show" class="box" w="10" h="10" bg="black" />
+
+      <MenuBar />
     </div>
-    <FloatingMenu v-if="editor " :editor="editor" :tippy-options="{ duration: 100 }">
-      <button :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
+    <FloatingMenu v-if="editor" :editor="editor" :tippy-options="{ duration: 1000 }">
+      <button
+        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
+        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+      >
         H1
       </button>
-      <button :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
+      <button
+        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
+        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+      >
         H2
       </button>
-      <button :class="{ 'is-active': editor.isActive('bulletList') }" @click="editor.chain().focus().toggleBulletList().run()">
+      <button
+        :class="{ 'is-active': editor.isActive('bulletList') }"
+        @click="editor.chain().focus().toggleBulletList().run()"
+      >
         Bullet List
       </button>
     </FloatingMenu>
@@ -226,7 +244,10 @@ onUnmounted(() => {
       <div center justify-start>
         <template v-for="(item, index) in menuList">
           <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
-          <MenuItem v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" :menu-pos-top="menuPost" />
+          <MenuItem
+            v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action"
+            :is-active="item.isActive" :menu-pos="menuPost"
+          />
           <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->
         </template>
       </div>
@@ -241,15 +262,18 @@ onUnmounted(() => {
   height: 24px;
   fill: #333;
 }
+
 .editor-main {
   display: flex;
   width: 100%;
   height: 100vh;
+
   .category-tool {
     width: 20%;
     background-color: #ffffff;
     border-right: 1px solid #e2e8f0;
   }
+
   .editor {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
@@ -258,16 +282,18 @@ onUnmounted(() => {
 }
 </style>
 
-<style  lang="scss">
+<style lang="scss">
 /* Basic editor styles */
 .tiptap {
   > * + * {
     margin-top: 0.75em;
   }
+
   border: 1px solid #e2e8f0;
   outline-color: #93b7f4;
   height: 100%;
   padding: 0.2rem;
+
   ul,
   ol {
     padding: 0 1rem;
