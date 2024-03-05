@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit'
 import type { Editor } from '@tiptap/vue-3'
-import { EditorContent, FloatingMenu, useEditor } from '@tiptap/vue-3'
+
+import { EditorContent, useEditor } from '@tiptap/vue-3'
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
 
 // import { menuList } from '~/constant/menuList'
-const isMenuVisible = ref(false)
+
 const menuPost = ref({ left: 0, top: 0 })
 
 const editor = useEditor({
@@ -196,10 +197,6 @@ const menuList = [
 ]
 const show = ref(false)
 
-function shouldShow() {
-  // 只有在编辑器中选择的文本是加粗时才显示
-  return editor?.value?.isActive('bold') && isMenuVisible.value
-}
 watchEffect(() => {
   show.value = editor?.value?.isActive('heading', { level: 2 })
 })
@@ -220,7 +217,7 @@ provide('editor', editor)
 
       <MenuBar />
     </div>
-    <FloatingMenu v-if="editor" :editor="editor" :tippy-options="{ duration: 1000 }">
+    <!-- <FloatingMenu v-if="editor" :editor="editor" :tippy-options="{ duration: 1000 }">
       <button
         :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
@@ -239,13 +236,13 @@ provide('editor', editor)
       >
         Bullet List
       </button>
-    </FloatingMenu>
+    </FloatingMenu> -->
     <div v-if="editor" class="editor">
       <div center justify-start>
         <template v-for="(item, index) in menuList">
           <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
           <MenuItem
-            v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action"
+            v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action || (() => {})"
             :is-active="item.isActive" :menu-pos="menuPost"
           />
           <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->

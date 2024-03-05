@@ -4,26 +4,49 @@
  * @since: 2024-03-01
  * index.vue
 -->
+
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
+import Collaboration from '@tiptap/extension-collaboration'
+import * as Y from 'yjs'
+import { WebrtcProvider } from 'y-webrtc'
 
-const editor = useEditor({
-  content: '<p>Hello, World!</p>',
-  extensions: [
-    StarterKit,
-  ],
-  editable: true, // 是否可编辑
-  autofocus: true, // 自动聚焦 就是页面开始时光标会在编辑器中 start在开头 end在结尾  all 选择整个文档
-  // 输入规则
+// A new Y document
+const ydoc = new Y.Doc()
+// Registered with a WebRTC provider
+const provider = new WebrtcProvider('.editor', ydoc)
 
+const editor = useEditor(
+  {
+    content: `
+        <h2>Welcome to the collaborative editor example</h2>
+        <p>This is a simple example of how to build a collaborative editor with Tiptap and Yjs.</p>
+      `,
+    extensions: [
+      StarterKit.configure({
+        // The Collaboration extension comes with its own history handling
+        history: false,
+
+      }),
+      // Register the document with Tiptap
+      Collaboration.configure({
+        document: ydoc,
+      }),
+    ],
+  },
+)
+onMounted(() => {
+  provider.awareness.setLocalStateField('user', {
+    name: `User ${Math.floor(Math.random() * 100)}`,
+  })
+  provider.connect()
 })
 </script>
 
 <template>
   <div class="container">
-    <MenuBar class="editor__header" :editor?="editor" />
-    <Editor />
+    <EditorContent :editor="editor" h="80vh" class="editor" />
   </div>
 </template>
 

@@ -5,8 +5,8 @@ import tippy from 'tippy.js'
 import MenuBar from './MenuBar.vue'
 
 defineProps<{
-  icon: string
-  title: string
+  icon: string | undefined
+  title: string | undefined
   menuPos: { top: number, left: number }
   action: () => void
   isActive?: () => boolean

@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Collaborative: typeof import('./src/components/Collaborative.vue')['default']
     MenuBar: typeof import('./src/components/MenuBar.vue')['default']
     MenuItem: typeof import('./src/components/MenuItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

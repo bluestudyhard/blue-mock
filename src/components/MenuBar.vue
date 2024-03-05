@@ -15,7 +15,7 @@ const menuList = [
     icon: 'bold',
     title: 'Bold',
     action: () => editor?.value.chain().focus().toggleBold().run(),
-    isActive: () => editor.value.isActive('bold'),
+    isActive: () => editor?.value.isActive('bold'),
   },
   {
     icon: 'italic',
