@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import StarterKit from '@tiptap/starter-kit'
 import type { Editor } from '@tiptap/vue-3'
-
+import TaskList from '@tiptap/extension-task-list'
+import Highlight from '@tiptap/extension-highlight'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
@@ -17,7 +18,8 @@ const editor = useEditor({
       `,
   extensions: [
     StarterKit,
-
+    TaskList,
+    Highlight,
   ],
   editable: true, // 是否可编辑
   autofocus: true, // 自动聚焦 就是页面开始时光标会在编辑器中 start在开头 end在结尾  all 选择整个文档

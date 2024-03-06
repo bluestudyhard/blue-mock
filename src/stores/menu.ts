@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Editor } from '@tiptap/vue-3'
-import TaskList from '@tiptap/extension-task-list'
-import Highlight from '@tiptap/extension-highlight'
+
 import type { MenuList } from '~/types'
 
 const useMenuStore = defineStore('editor-menu', {
