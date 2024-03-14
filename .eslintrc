@@ -2,8 +2,9 @@
   "extends": "@antfu",
   "rules": {
     // 禁用console检查和template检查
-    "no-console": "off",
+    "no-console": 0,
     "vue/no-template-shadow": "off",
-    "no-alert":"off"
+    "no-alert": "off",
+    "no-debugger": "off"
   }
 }

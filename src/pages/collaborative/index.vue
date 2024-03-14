@@ -40,7 +40,9 @@ onMounted(() => {
   provider.awareness.setLocalStateField('user', {
     name: `User ${Math.floor(Math.random() * 100)}`,
   })
-  provider.connect()
+  provider.on('status', (event) => {
+    console.log(event.connected) // logs "connected" or "disconnected"
+  })
 })
 </script>
 

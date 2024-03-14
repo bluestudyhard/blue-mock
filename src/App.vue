@@ -21,6 +21,11 @@
             Collaborative
           </router-link>
         </li>
+        <li>
+          <router-link to="/personal">
+            Personal
+          </router-link>
+        </li>
       </ul>
     </nav>
     <main p="x-12 y-12" text="  gray-700 dark:gray-200" bg="white" h="full">
