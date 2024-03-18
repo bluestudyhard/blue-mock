@@ -1,0 +1,41 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html.dark {
+  background: #121212;
+}
+
+ol {
+  display: block;
+  list-style-type: decimal !important;
+  margin-block-start: .5em;
+  margin-block-end: .5em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 20px;
+}
+
+ul {
+  list-style: disc !important;
+}
+a {
+  color: #007bff;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.el-menu {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.el-overlay-dialog {
+  overflow: hidden !important;
+}
