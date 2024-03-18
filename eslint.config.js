@@ -12,6 +12,6 @@ export default antfu({
     'no-console': 'off',
     'vue/no-multiple-template-root': 'off',
     'node/prefer-global/process': 'off',
-    'unused-imports/no-unused-vars': 'off'
+    'unused-imports/no-unused-vars': 'off',
   },
 })

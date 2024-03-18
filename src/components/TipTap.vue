@@ -227,7 +227,7 @@ watchEffect(() => {
 })
 
 onMounted(async () => {
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTA3NTQ3NzIsImV4cCI6MTcxMDg0MTE3Mn0.5YmY83UXeLaRCcwk8UE3IlMu9D-D9IB5HPm7J9vbRGQ'
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTA3NTQ3NzIsImV4cCI6MTcxMDg0MTE3Mn0.5YmY83UXeLaRCcwk8UE3IlMu9D-D9IB5HPm7J9vbRGQ'
   const { TiptapCollabProvider } = await import('@hocuspocus/provider')
 
   const provider = new TiptapCollabProvider({
@@ -248,40 +248,29 @@ provide('editor', editor)
   <div class="editor-main">
     <div class="category-tool">
       侧边工具栏
-
       <MenuBar />
     </div>
-    <!-- <FloatingMenu v-if="editor" :editor="editor" :tippy-options="{ duration: 1000 }">
-      <button
-        :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }"
-        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-      >
-        H1
-      </button>
-      <button
-        :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }"
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-      >
-        H2
-      </button>
-      <button
-        :class="{ 'is-active': editor.isActive('bulletList') }"
-        @click="editor.chain().focus().toggleBulletList().run()"
-      >
-        Bullet List
-      </button>
-    </FloatingMenu> -->
+
     <div v-if="editor" class="editor">
       <div center justify-start>
         <template v-for="(item, index) in menuList">
-          <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
-          <MenuItem
-            v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action || (() => {})"
-            :is-active="item.isActive" :menu-pos="menuPost"
+          <div
+            v-if="item.type === 'divider'"
+            :key="`divider${index}`"
+            class="divider center"
           />
-          <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->
+          <MenuItem
+            v-else
+            :key="index"
+            :icon="item.icon"
+            :title="item.title"
+            :action="item.action || (() => {})"
+            :is-active="item.isActive"
+            :menu-pos="menuPost"
+          />
         </template>
       </div>
+
       <EditorContent :editor="editor" h="80vh" />
     </div>
   </div>

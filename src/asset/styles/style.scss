@@ -163,7 +163,9 @@ body {
 
     h1,
     h1:after {
-      font: 600 1.5em/1 "Raleway", sans-serif;
+      font:
+        600 1.5em/1 'Raleway',
+        sans-serif;
       color: rgba(0, 0, 0, 0.5);
       text-align: center;
       text-transform: uppercase;
@@ -220,7 +222,9 @@ body {
     pointer-events: none;
 
     li {
-      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      transition:
+        transform 0.3s ease-in-out,
+        opacity 0.3s ease-in-out;
       transform: translateX(150%);
       opacity: 0;
       background: $tycho1;

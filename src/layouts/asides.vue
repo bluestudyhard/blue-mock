@@ -5,14 +5,20 @@
  * aside.vue
 -->
 <script setup lang="ts">
-// import useDocsStore from '~/stores/docs'
+import useDocsStore from '~/stores/docs'
 import type { docsListType } from '~/types/index'
 
 const docsList = ref<docsListType[]>([])
 onMounted(async () => {
-  // await useDocsStore().getDocsList()
-  // docsList.value = useDocsStore().docsList
+  await useDocsStore().getDocsList()
+  docsList.value = useDocsStore().docsList
 })
+
+const router = useRouter()
+function go(name: string) {
+  if (name)
+    router.push(`/docs/${encodeURIComponent(name)}`)
+}
 </script>
 
 <template>
@@ -20,14 +26,14 @@ onMounted(async () => {
     这是侧边栏layout
     <div>
       <el-menu>
-        <!-- <template v-for="(doc, index) in docsList">
+        <template v-for="(doc, index) in docsList" :key="doc.name">
           <el-menu-item>
-            <span>
+            <span @click="go(doc.name)">
               {{ index }} {{ doc.name }} {{ doc.size }}
               {{ doc.created_at?.slice(0, 10) }}
             </span>
           </el-menu-item>
-        </template> -->
+        </template>
       </el-menu>
     </div>
   </el-aside>

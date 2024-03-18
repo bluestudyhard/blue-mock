@@ -1,42 +1,21 @@
 <script setup lang="ts">
 import remixiconUrl from '/remixicon.symbol.svg'
-import type { Editor } from '@tiptap/vue-3'
-import tippy from 'tippy.js'
-import { createApp } from 'vue'
-import MenuBar from './MenuBar.vue'
 
-defineProps<{
+const props = defineProps<{
   icon: string | undefined
   title: string | undefined
   menuPos: { top: number, left: number }
-  action: () => void
+  // action: () => void
   isActive?: () => boolean
-
 }>()
-const editor = inject<Editor>('editor')
-const tippyBind = ref<HTMLElement | null>(null)
-onMounted(() => {
-  if (tippyBind.value) {
-    const el = document.createElement('div')
-    const app = createApp(MenuBar, { editor })
-    app.provide('editor', editor)
-    app.mount(el)
-
-    tippy(tippyBind.value, {
-      // your optionalProps here
-      // trigger: 'click',
-      interactive: true,
-      content: el,
-      placement: 'left',
-    })
-  }
-})
 </script>
 
 <template>
   <button
-    ref="tippyBind" class="menu-item" :class="{ 'is-active': isActive ? isActive() : false }" :title="title"
-    :style="{ top: isActive ? `${menuPos.top}px` : `-1000px`, left: `${menuPos.left}px` }" @click="action"
+    class="menu-item"
+    :class="{ 'is-active': isActive ? isActive() : false }"
+    :title="title" 
+    @click="$emit('action')"
   >
     <svg class="remix">
       <use :xlink:href="`${remixiconUrl}#ri-${icon}`" />

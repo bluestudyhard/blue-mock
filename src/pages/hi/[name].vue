@@ -2,7 +2,6 @@
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
 
-
 const doc = new Y.Doc()
 const wsProvider = new WebsocketProvider('ws://localhost:44444', 'my-roomname', doc)
 

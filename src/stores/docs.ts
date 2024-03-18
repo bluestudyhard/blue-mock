@@ -8,15 +8,16 @@ const useDocsStore = defineStore({
   }),
   actions: {
     async getDocsList() {
-      console.log('length', this.docsList.length)
-      // if (this.docsList.length > 1)
-      //   return
+      if (this.docsList.length > 1)
+        return
       const res = await _getDocsList()
       this.docsList = res
     },
   },
   // 持久化
-  persist: true,
+  persist: {
+    storage: persistedState.localStorage,
+  },
 })
 
 export default useDocsStore

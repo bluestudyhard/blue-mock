@@ -9,126 +9,124 @@
 import type { Editor } from '@tiptap/vue-3'
 import remixiconUrl from '/remixicon.symbol.svg'
 
-const editor = inject<Ref<Editor>>('editor')!
+const props = defineProps<{
+  editor: Editor
+}>()
+
 const menuList = [
   {
     icon: 'bold',
     title: 'Bold',
-    action: () => editor?.value.chain().focus().toggleBold().run(),
-    isActive: () => editor?.value.isActive('bold'),
+    action: () => props.editor.chain().focus().toggleBold().run(),
+    isActive: () => props.editor.isActive('bold'),
   },
   {
     icon: 'italic',
     title: 'Italic',
-    action: () => editor.value.chain().focus().toggleItalic().run(),
-    isActive: () => editor.value.isActive('italic'),
+    action: () => props.editor.chain().focus().toggleItalic().run(),
+    isActive: () => props.editor.isActive('italic'),
   },
   {
     icon: 'strikethrough',
     title: 'Strike',
-    action: () => editor.value.chain().focus().toggleStrike().run(),
-    isActive: () => editor.value.isActive('strike'),
+    action: () => props.editor.chain().focus().toggleStrike().run(),
+    isActive: () => props.editor.isActive('strike'),
   },
   {
     icon: 'code-view',
     title: 'Code',
-    action: () => editor.value.chain().focus().toggleCode().run(),
-    isActive: () => editor.value.isActive('code'),
+    action: () => props.editor.chain().focus().toggleCode().run(),
+    isActive: () => props.editor.isActive('code'),
   },
   {
     icon: 'mark-pen-line',
     title: 'Highlight',
-    action: () => editor.value.chain().focus().toggleHighlight().run(),
-    isActive: () => editor.value.isActive('highlight'),
-  },
-  {
-    type: 'divider',
+    action: () => props.editor.chain().focus().toggleHighlight().run(),
+    isActive: () => props.editor.isActive('highlight'),
   },
   {
     icon: 'h-1',
     title: 'Heading 1',
-    action: () => editor.value.chain().focus().toggleHeading({ level: 1 }).run(),
-    isActive: () => editor.value.isActive('heading', { level: 1 }),
+    action: () => props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    isActive: () => props.editor.isActive('heading', { level: 1 }),
   },
   {
     icon: 'h-2',
     title: 'Heading 2',
-    action: () => editor.value.chain().focus().toggleHeading({ level: 2 }).run(),
-    isActive: () => editor.value.isActive('heading', { level: 2 }),
+    action: () => props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    isActive: () => props.editor.isActive('heading', { level: 2 }),
   },
   {
     icon: 'paragraph',
     title: 'Paragraph',
-    action: () => editor.value.chain().focus().setParagraph().run(),
-    isActive: () => editor.value.isActive('paragraph'),
+    action: () => props.editor.chain().focus().setParagraph().run(),
+    isActive: () => props.editor.isActive('paragraph'),
   },
   {
     icon: 'list-unordered',
     title: 'Bullet List',
-    action: () => editor.value.chain().focus().toggleBulletList().run(),
-    isActive: () => editor.value.isActive('bulletList'),
+    action: () => props.editor.chain().focus().toggleBulletList().run(),
+    isActive: () => props.editor.isActive('bulletList'),
   },
   {
     icon: 'list-ordered',
     title: 'Ordered List',
-    action: () => editor.value.chain().focus().toggleOrderedList().run(),
-    isActive: () => editor.value.isActive('orderedList'),
+    action: () => props.editor.chain().focus().toggleOrderedList().run(),
+    isActive: () => props.editor.isActive('orderedList'),
   },
   {
     icon: 'list-check-2',
     title: 'Task List',
-    action: () => editor.value.chain().focus().toggleTaskList().run(),
-    isActive: () => editor.value.isActive('taskList'),
+    action: () => props.editor.chain().focus().toggleTaskList().run(),
+    isActive: () => props.editor.isActive('taskList'),
   },
   {
     icon: 'code-box-line',
     title: 'Code Block',
-    action: () => editor.value.chain().focus().toggleCodeBlock().run(),
-    isActive: () => editor.value.isActive('codeBlock'),
-  },
-  {
-    type: 'divider',
+    action: () => {
+      try {
+        return props.editor.chain().focus().toggleCodeBlock().run()
+      }
+      catch (e) {
+        console.log(`error: ${e}`)
+      }
+    },
+    isActive: () => props.editor.isActive('codeBlock'),
   },
   {
     icon: 'double-quotes-l',
     title: 'Blockquote',
-    action: () => editor.value.chain().focus().toggleBlockquote().run(),
-    isActive: () => editor.value.isActive('blockquote'),
+    action: () => props.editor.chain().focus().toggleBlockquote().run(),
+    isActive: () => props.editor.isActive('blockquote'),
   },
   {
     icon: 'separator',
     title: 'Horizontal Rule',
-    action: () => editor.value.chain().focus().setHorizontalRule().run(),
-  },
-  {
-    type: 'divider',
+    action: () => props.editor.chain().focus().setHorizontalRule().run(),
   },
   {
     icon: 'text-wrap',
     title: 'Hard Break',
-    action: () => editor.value.chain().focus().setHardBreak().run(),
+    action: () => props.editor.chain().focus().setHardBreak().run(),
   },
   {
     icon: 'format-clear',
     title: 'Clear Format',
-    action: () => editor.value.chain()
+    action: () => props.editor.chain()
       .focus()
       .clearNodes()
       .unsetAllMarks()
       .run(),
   },
   {
-    type: 'divider',
-  },
-  {
     icon: 'arrow-go-back-line',
     title: 'Undo',
-    action: () => editor.value.chain().focus().undo().run(),
+    action: () => props.editor.chain().focus().undo().run(),
   },
   {
     icon: 'arrow-go-forward-line',
     title: 'Redo',
-    action: () => editor.value.chain().focus().redo().run(),
+    action: () => props.editor.chain().focus().redo().run(),
   },
 ]
 </script>
@@ -136,18 +134,20 @@ const menuList = [
 <template>
   <div class="h-30 w-20 container">
     <div flex w="40" class="flex-wrap">
-      <template v-for="(item, index) in menuList">
-        <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
-        <button
-          v-else :key="index" class="menu-item-bar" :class="{ 'is-active': isActive ? item.isActive : false }"
-          :title="item.title" @click="item.action"
-        >
-          <svg class="remix">
-            <use :xlink:href="`${remixiconUrl}#ri-${item.icon}`" />
-          </svg>
-        </button>
-      <!-- <MenuItem v-if="selectedNodeType === item.icon" :key="index" :icon="item.icon" :title="item.title" :action="item.action" :is-active="item.isActive" /> -->
-      </template>
+      <button
+        v-for="(item, index) in menuList"
+        :key="index"
+        class="menu-item-bar"
+        :title="item.title"
+        @click="() => {
+          item.action()
+          $emit('action', item.icon)
+        }"
+      >
+        <svg class="remix">
+          <use :xlink:href="`${remixiconUrl}#ri-${item.icon}`" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
@@ -172,6 +172,38 @@ const menuList = [
   }
 
   &.is-active,
+  &:hover {
+    color: #4177f4;
+    background-color: #e0e9ff;
+  }
+}
+.menu-item {
+  background: transparent;
+  border: none;
+  border-radius: 0.4rem;
+  color: transparent;
+  cursor: pointer;
+  height: 1.75rem;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+  width: 1.75rem;
+  position: fixed;
+  top: -1000px;
+  left: -1000px;
+  display: none;
+
+  svg {
+    fill: currentColor;
+    height: 100%;
+    width: 100%;
+  }
+
+  &.is-active {
+    display: block;
+    color: #4177f4;
+    background-color: #e0e9ff;
+  }
+
   &:hover {
     color: #4177f4;
     background-color: #e0e9ff;

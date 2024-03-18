@@ -8,8 +8,21 @@ import { EditorContent, useEditor } from '@tiptap/vue-3'
 import type { EditorView } from 'prosemirror-view'
 import type { EditorState } from 'prosemirror-state'
 import Placeholder from '@tiptap/extension-placeholder'
+import tippy from 'tippy.js'
+import { h, render } from 'vue'
+import remixiconUrl from '/remixicon.symbol.svg'
+import MenuBar from '~/components/MenuBar.vue'
 
+const name = ref('')
+
+const router = useRouter()
+// 获取路由参数
+const route = useRoute()
+const doc = (route.params as { doc: string }).doc
+name.value = doc
 const menuPost = ref({ left: 0, top: 0 })
+
+const curIcon = ref('bold')
 
 const editor = useEditor({
   content: `
@@ -30,10 +43,8 @@ const editor = useEditor({
   autofocus: true, // 自动聚焦 就是页面开始时光标会在编辑器中 start在开头 end在结尾  all 选择整个文档
   // 输入规则
   onSelectionUpdate: () => {
-
-    // 获取编辑器的状态
+  // 获取编辑器的状态
     const state = editor?.value?.state as EditorState
-
     const selection = state.selection
 
     // 获取选中元素的开始和结束位置
@@ -45,7 +56,6 @@ const editor = useEditor({
     // 初始时拿到编辑器第一行的p标签的坐标
 
     // 获取编辑器的左边距
-
     const editorleft = editorElement.offsetLeft
     menuPost.value.left = editorleft - 30
 
@@ -58,165 +68,58 @@ const editor = useEditor({
 
     // 初始时拿到编辑器第一行的p标签的坐标
     const initPost = view.coordsAtPos(1)
-    console.log('initPost', initPost)
+
     menuPost.value.top = initPost.top
     menuPost.value.left = initPost.left - 35
   },
 }) as Ref<Editor>
-const menuList = [
-  {
-    icon: 'bold',
-    title: 'Bold',
-    action: () => editor?.value?.chain().focus().toggleBold().run(),
-    isActive: () => editor?.value?.isActive('bold'),
-  },
-  {
-    icon: 'italic',
-    title: 'Italic',
-    action: () => editor?.value?.chain().focus().toggleItalic().run(),
-    isActive: () => editor?.value?.isActive('italic'),
-  },
-  {
-    icon: 'strikethrough',
-    title: 'Strike',
-    action: () => editor?.value?.chain().focus().toggleStrike().run(),
-    isActive: () => editor?.value?.isActive('strike'),
-  },
-  {
-    icon: 'code-view',
-    title: 'Code',
-    action: () => editor?.value?.chain().focus().toggleCode().run(),
-    isActive: () => editor?.value?.isActive('code'),
-  },
-  {
-    icon: 'mark-pen-line',
-    title: 'Highlight',
-    action: () => editor?.value?.chain().focus().toggleHighlight().run(),
-    isActive: () => editor?.value?.isActive('highlight'),
-  },
-  {
-    type: 'divider',
-  },
-  {
-    icon: 'h-1',
-    title: 'Heading 1',
-    action: () => editor?.value?.chain().focus().toggleHeading({ level: 1 }).run(),
-    isActive: () => editor?.value?.isActive('heading', { level: 1 }),
-  },
-  {
-    icon: 'h-2',
-    title: 'Heading 2',
-    action: () => editor?.value?.chain().focus().toggleHeading({ level: 2 }).run(),
-    isActive: () => editor?.value?.isActive('heading', { level: 2 }),
-  },
-  {
-    icon: 'paragraph',
-    title: 'Paragraph',
-    action: () => editor?.value?.chain().focus().setParagraph().run(),
-    isActive: () => editor?.value?.isActive('paragraph'),
-  },
-  {
-    icon: 'list-unordered',
-    title: 'Bullet List',
-    action: () => editor?.value?.chain().focus().toggleBulletList().run(),
-    isActive: () => editor?.value?.isActive('bulletList'),
-  },
-  {
-    icon: 'list-ordered',
-    title: 'Ordered List',
-    action: () => editor?.value?.chain().focus().toggleOrderedList().run(),
-    isActive: () => editor?.value?.isActive('orderedList'),
-  },
-  {
-    icon: 'list-check-2',
-    title: 'Task List',
-    action: () => editor?.value?.chain().focus().toggleTaskList().run(),
-    isActive: () => editor?.value?.isActive('taskList'),
-  },
-  {
-    icon: 'code-box-line',
-    title: 'Code Block',
-    action: () => editor?.value?.chain().focus().toggleCodeBlock().run(),
-    isActive: () => editor?.value?.isActive('codeBlock'),
-  },
-  {
-    type: 'divider',
-  },
-  {
-    icon: 'double-quotes-l',
-    title: 'Blockquote',
-    action: () => editor?.value?.chain().focus().toggleBlockquote().run(),
-    isActive: () => editor?.value?.isActive('blockquote'),
-  },
-  {
-    icon: 'separator',
-    title: 'Horizontal Rule',
-    action: () => editor?.value?.chain().focus().setHorizontalRule().run(),
-  },
-  {
-    type: 'divider',
-  },
-  {
-    icon: 'text-wrap',
-    title: 'Hard Break',
-    action: () => editor?.value?.chain().focus().setHardBreak().run(),
-  },
-  {
-    icon: 'format-clear',
-    title: 'Clear Format',
-    action: () => editor?.value?.chain()
-      .focus()
-      .clearNodes()
-      .unsetAllMarks()
-      .run(),
-  },
-  {
-    type: 'divider',
-  },
-  {
-    icon: 'arrow-go-back-line',
-    title: 'Undo',
-    action: () => editor?.value?.chain().focus().undo().run(),
-  },
-  {
-    icon: 'arrow-go-forward-line',
-    title: 'Redo',
-    action: () => editor?.value?.chain().focus().redo().run(),
-  },
-]
-
-watchEffect(() => {
-  console.log(menuPost.value)
-})
-onMounted(() => {
-
-})
 
 onUnmounted(() => {
   editor?.value?.destroy()
 })
-provide('editor', editor)
+
+const tippyBind = ref<HTMLElement | null>(null)
+onMounted(() => {
+  if (!tippyBind.value || !editor.value)
+    return
+
+  const div = document.createElement('div')
+  const el = h(MenuBar, {
+    editor: editor.value,
+    onAction: (icon: string) => {
+      curIcon.value = icon
+      console.log('action!', icon)
+    },
+  })
+  render(el, div)
+
+  tippy(tippyBind.value, {
+    // trigger: 'click',
+    interactive: true,
+    content: div,
+    placement: 'left',
+  })
+})
 </script>
 
 <template>
+  <h1>{{ name }}</h1>
   <div class="editor-main">
-    <div class="category-tool">
-      侧边工具栏
-
+    <!-- <div class="category-tool">
       <MenuBar />
-    </div>
+    </div> -->
 
-    <div v-if="editor" class="editor">
-      <div center justify-start>
-        <template v-for="(item, index) in menuList">
-          <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
-          <MenuItem
-            v-else :key="index" :icon="item.icon" :title="item.title" :action="item.action || (() => {})"
-            :is-active="item.isActive" :menu-pos="menuPost"
-          />
-        </template>
+    <div class="editor">
+      <div
+        ref="tippyBind"
+        class=""
+      >
+        <svg class="remix">
+          <use :xlink:href="`${remixiconUrl}#ri-${curIcon}`" />
+        </svg>
       </div>
-      <EditorContent :editor="editor" h="80vh" />
+
+      <EditorContent v-if="editor" :editor="editor" h="80vh" w="90%" />
     </div>
   </div>
 </template>
@@ -233,8 +136,8 @@ provide('editor', editor)
   width: 100%;
   height: 100vh;
 
+  flex-direction: column;
   .category-tool {
-    width: 20%;
     background-color: #ffffff;
     border-right: 1px solid #e2e8f0;
   }
@@ -242,7 +145,8 @@ provide('editor', editor)
   .editor {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
-    width: 80%;
+    width: 95%;
+    align-self: flex-end;
   }
 }
 </style>
