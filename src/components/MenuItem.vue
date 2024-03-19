@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import remixiconUrl from '/remixicon.symbol.svg'
 
-const props = defineProps<{
+defineProps<{
   icon: string | undefined
   title: string | undefined
   menuPos: { top: number, left: number }
@@ -14,7 +14,8 @@ const props = defineProps<{
   <button
     class="menu-item"
     :class="{ 'is-active': isActive ? isActive() : false }"
-    :title="title" 
+    :title="title"
+    :style="{ top: `${menuPos.top}px`, left: `${menuPos.left}px` }"
     @click="$emit('action')"
   >
     <svg class="remix">
@@ -35,9 +36,9 @@ const props = defineProps<{
   margin-right: 0.25rem;
   width: 1.75rem;
   position: fixed;
-  top: -1000px;
-  left: -1000px;
-  display: none;
+  // top: -1000px;
+  // left: -1000px;
+  // display: none;
 
   svg {
     fill: currentColor;

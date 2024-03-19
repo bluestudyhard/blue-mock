@@ -248,29 +248,18 @@ provide('editor', editor)
   <div class="editor-main">
     <div class="category-tool">
       侧边工具栏
-      <MenuBar />
-    </div>
-
-    <div v-if="editor" class="editor">
       <div center justify-start>
         <template v-for="(item, index) in menuList">
-          <div
-            v-if="item.type === 'divider'"
-            :key="`divider${index}`"
-            class="divider center"
-          />
+          <div v-if="item.type === 'divider'" :key="`divider${index}`" class="divider" center />
           <MenuItem
-            v-else
-            :key="index"
-            :icon="item.icon"
-            :title="item.title"
-            :action="item.action || (() => {})"
-            :is-active="item.isActive"
-            :menu-pos="menuPost"
+            v-else :key="index" :icon="item.icon" :title="item.title" :is-active="item.isActive"
+            :menu-pos="menuPost" @action="item.action || (() => {})"
           />
         </template>
       </div>
+    </div>
 
+    <div v-if="editor" class="editor">
       <EditorContent :editor="editor" h="80vh" />
     </div>
   </div>
@@ -304,6 +293,7 @@ provide('editor', editor)
 
 <style lang="scss">
 /* Basic editor styles */
+
 .tiptap {
   > * + * {
     margin-top: 0.75em;

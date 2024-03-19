@@ -12,136 +12,35 @@ import remixiconUrl from '/remixicon.symbol.svg'
 const props = defineProps<{
   editor: Editor
 }>()
+defineEmits(['action'])
+const { menuActionList } = initMenuList(props.editor)
 
-const menuList = [
-  {
-    icon: 'bold',
-    title: 'Bold',
-    action: () => props.editor.chain().focus().toggleBold().run(),
-    isActive: () => props.editor.isActive('bold'),
-  },
-  {
-    icon: 'italic',
-    title: 'Italic',
-    action: () => props.editor.chain().focus().toggleItalic().run(),
-    isActive: () => props.editor.isActive('italic'),
-  },
-  {
-    icon: 'strikethrough',
-    title: 'Strike',
-    action: () => props.editor.chain().focus().toggleStrike().run(),
-    isActive: () => props.editor.isActive('strike'),
-  },
-  {
-    icon: 'code-view',
-    title: 'Code',
-    action: () => props.editor.chain().focus().toggleCode().run(),
-    isActive: () => props.editor.isActive('code'),
-  },
-  {
-    icon: 'mark-pen-line',
-    title: 'Highlight',
-    action: () => props.editor.chain().focus().toggleHighlight().run(),
-    isActive: () => props.editor.isActive('highlight'),
-  },
-  {
-    icon: 'h-1',
-    title: 'Heading 1',
-    action: () => props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-    isActive: () => props.editor.isActive('heading', { level: 1 }),
-  },
-  {
-    icon: 'h-2',
-    title: 'Heading 2',
-    action: () => props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-    isActive: () => props.editor.isActive('heading', { level: 2 }),
-  },
-  {
-    icon: 'paragraph',
-    title: 'Paragraph',
-    action: () => props.editor.chain().focus().setParagraph().run(),
-    isActive: () => props.editor.isActive('paragraph'),
-  },
-  {
-    icon: 'list-unordered',
-    title: 'Bullet List',
-    action: () => props.editor.chain().focus().toggleBulletList().run(),
-    isActive: () => props.editor.isActive('bulletList'),
-  },
-  {
-    icon: 'list-ordered',
-    title: 'Ordered List',
-    action: () => props.editor.chain().focus().toggleOrderedList().run(),
-    isActive: () => props.editor.isActive('orderedList'),
-  },
-  {
-    icon: 'list-check-2',
-    title: 'Task List',
-    action: () => props.editor.chain().focus().toggleTaskList().run(),
-    isActive: () => props.editor.isActive('taskList'),
-  },
-  {
-    icon: 'code-box-line',
-    title: 'Code Block',
-    action: () => {
-      try {
-        return props.editor.chain().focus().toggleCodeBlock().run()
-      }
-      catch (e) {
-        console.log(`error: ${e}`)
-      }
-    },
-    isActive: () => props.editor.isActive('codeBlock'),
-  },
-  {
-    icon: 'double-quotes-l',
-    title: 'Blockquote',
-    action: () => props.editor.chain().focus().toggleBlockquote().run(),
-    isActive: () => props.editor.isActive('blockquote'),
-  },
-  {
-    icon: 'separator',
-    title: 'Horizontal Rule',
-    action: () => props.editor.chain().focus().setHorizontalRule().run(),
-  },
-  {
-    icon: 'text-wrap',
-    title: 'Hard Break',
-    action: () => props.editor.chain().focus().setHardBreak().run(),
-  },
-  {
-    icon: 'format-clear',
-    title: 'Clear Format',
-    action: () => props.editor.chain()
-      .focus()
-      .clearNodes()
-      .unsetAllMarks()
-      .run(),
-  },
-  {
-    icon: 'arrow-go-back-line',
-    title: 'Undo',
-    action: () => props.editor.chain().focus().undo().run(),
-  },
-  {
-    icon: 'arrow-go-forward-line',
-    title: 'Redo',
-    action: () => props.editor.chain().focus().redo().run(),
-  },
-]
+const menus = menuList.map((item) => {
+  const title = item.title
+  const itemInActionList = menuActionList.find(actionItem => actionItem.title === title)
+
+  return {
+    title,
+    icon: item.icon,
+    action: itemInActionList?.action || (() => {}),
+    isActive: itemInActionList?.isActive || (() => false),
+  }
+})
 </script>
 
 <template>
   <div class="h-30 w-20 container">
     <div flex w="40" class="flex-wrap">
+      <!-- is-active 是一个 CSS 类，它会根据后面的表达式的结果动态地添加或移除。表达式 item.isActive ? item.isActive() : false 是一个三元运算符，它会检查 item.isActive 是否存在并且是一个函数。如果是，那么它会调用 item.isActive() 函数并返回结果；如果不是，那么它会返回 false。 -->
       <button
-        v-for="(item, index) in menuList"
+        v-for="(item, index) in menus"
         :key="index"
+        :class="{ 'is-active': item.isActive() }"
         class="menu-item-bar"
         :title="item.title"
         @click="() => {
           item.action()
-          $emit('action', item.icon)
+          $emit('action', { icon: item.icon, isActive: item.isActive() })
         }"
       >
         <svg class="remix">
@@ -188,8 +87,6 @@ const menuList = [
   margin-right: 0.25rem;
   width: 1.75rem;
   position: fixed;
-  top: -1000px;
-  left: -1000px;
   display: none;
 
   svg {
