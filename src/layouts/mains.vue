@@ -4,7 +4,9 @@
  * @since: 2024-03-17
  * main.vue
 -->
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+</script>
 
 <template>
   <div class="container">
@@ -17,4 +19,6 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

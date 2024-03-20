@@ -42,6 +42,8 @@ function go(name: string) {
 <style scoped lang="scss">
 .aside {
   background-color: #f5f6f7;
-  box-shadow: 1 0 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 0px 2px rgba(110, 110, 110, 0.1);
+  height: 100%;
+  overflow: hidden;
 }
 </style>

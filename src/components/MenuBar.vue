@@ -12,7 +12,7 @@ import remixiconUrl from '/remixicon.symbol.svg'
 const props = defineProps<{
   editor: Editor
 }>()
-defineEmits(['action'])
+// defineEmits(['action'])
 const { menuActionList } = initMenuList(props.editor)
 
 const menus = menuList.map((item) => {
@@ -22,7 +22,7 @@ const menus = menuList.map((item) => {
   return {
     title,
     icon: item.icon,
-    action: itemInActionList?.action || (() => {}),
+    action: itemInActionList?.action || (() => {}), // 这样就不会报类型错误了
     isActive: itemInActionList?.isActive || (() => false),
   }
 })
@@ -40,7 +40,6 @@ const menus = menuList.map((item) => {
         :title="item.title"
         @click="() => {
           item.action()
-          $emit('action', { icon: item.icon, isActive: item.isActive() })
         }"
       >
         <svg class="remix">

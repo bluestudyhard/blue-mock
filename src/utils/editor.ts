@@ -53,6 +53,11 @@ export const menuList: MenuItem[] = [
     attrs: { type: 'heading', level: 2 },
   },
   {
+    icon: 'h-3',
+    title: 'heading 3',
+    attrs: { type: 'heading', level: 3 },
+  },
+  {
     icon: 'paragraph',
     title: 'Paragraph',
     attrs: { type: 'paragraph' },
@@ -78,6 +83,11 @@ export const menuList: MenuItem[] = [
     attrs: { type: 'codeBlock' },
   },
   {
+    icon: 'double-quotes-r',
+    title: 'Blockquote',
+    attrs: { type: 'blockquote' },
+  },
+  {
     icon: 'double-quotes-l',
     title: 'Blockquote',
     attrs: { type: 'blockquote' },
@@ -91,6 +101,18 @@ export const menuList: MenuItem[] = [
     icon: 'text-wrap',
     title: 'Hard Break',
     attrs: { type: 'paragraph' },
+  },
+  {
+    icon: 'align-left',
+    title: 'text-align-left',
+  },
+  {
+    icon: 'align-center',
+    title: 'text-align-center',
+  },
+  {
+    icon: 'align-right',
+    title: 'text-align-right',
   },
   {
     icon: 'format-clear',
@@ -153,6 +175,11 @@ export function initMenuList(editor: Editor) {
       isActive: () => editor.isActive('heading', { level: 2 }),
     },
     {
+      title: 'heading 3',
+      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+      isActive: () => editor.isActive('heading', { level: 3 }),
+    },
+    {
       title: 'Paragraph',
       action: () => editor.chain().focus().setParagraph().run(),
       isActive: () => editor.isActive('paragraph'),
@@ -181,6 +208,27 @@ export function initMenuList(editor: Editor) {
       title: 'Blockquote',
       action: () => editor.chain().focus().toggleBlockquote().run(),
       isActive: () => editor.isActive('blockquote'),
+    },
+    {
+      title: 'Blockquote',
+      action: () => editor.chain().focus().toggleBlockquote().run(),
+      isActive: () => editor.isActive('blockquote'),
+    },
+    {
+      title: 'text-align-left',
+      action: () => editor.chain().focus().setTextAlign('left').run(),
+      isActive: () => editor.isActive('textAlign', 'left'),
+    },
+    {
+      title: 'text-align-center',
+      action: () => editor.chain().focus().setTextAlign('center').run(),
+      isActive: () => editor.isActive('textAlign', 'center'),
+
+    },
+    {
+      title: 'text-align-right',
+      action: () => editor.chain().focus().setTextAlign('right').run(),
+      isActive: () => editor.isActive('textAlign', 'right'),
     },
     {
       title: 'Horizontal Rule',
