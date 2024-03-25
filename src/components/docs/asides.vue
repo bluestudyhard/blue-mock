@@ -14,23 +14,25 @@ onMounted(async () => {
   docsList.value = useDocsStore().docsList
 })
 
-const router = useRouter()
 function go(name: string) {
   if (name)
-    router.push(`/docs/${encodeURIComponent(name)}`)
+    navigateTo(`/docs/${encodeURIComponent(name)}`)
 }
 </script>
 
 <template>
-  <el-aside border="r" h="full" min-h="100vh" p="x-10 y-5" class="aside">
-    这是侧边栏layout
+  <el-aside border="r" h="full" min-h="100vh" p="x-4 y-5" class="aside" text-center>
+    <h1>mk云文档</h1>
     <div>
       <el-menu>
-        <template v-for="(doc, index) in docsList" :key="doc.name">
-          <el-menu-item>
-            <span @click="go(doc.name)">
-              {{ index }} {{ doc.name }} {{ doc.size }}
-              {{ doc.created_at?.slice(0, 10) }}
+        <template v-for="(doc) in docsList" :key="doc.name">
+          <el-menu-item w="full" class="menu-item">
+            <span
+              text-center
+              text="1rem"
+              @click.prevent="go(doc.name)"
+            >
+              {{ doc.name }}
             </span>
           </el-menu-item>
         </template>

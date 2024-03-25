@@ -67,6 +67,7 @@ export default defineNuxtConfig({
     },
     routeRules: {
       '/tiptap/**': { proxy: `${tiptapUrl}/**` },
+      '/auth/**': { proxy: 'http://localhost:3333/api/auth/**' },
     },
   },
 

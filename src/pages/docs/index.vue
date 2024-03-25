@@ -1,11 +1,19 @@
-<script setup lang="ts" generic="T extends any, O extends any">
-defineOptions({
-  name: 'DocsIndexPage',
+<!--
+ * new page
+ * @author: blue
+ * @since: 2024-03-25
+ * index.vue
+-->
+<script setup lang="ts">
+definePageMeta({
+  layout: 'docs',
 })
 </script>
 
 <template>
-  <el-container>
-    <h1>docs首页</h1>
-  </el-container>
+  <div class="container">
+    <h1>首页</h1>
+  </div>
 </template>
+
+<style scoped></style>

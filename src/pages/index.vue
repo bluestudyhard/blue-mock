@@ -2,12 +2,15 @@
 defineOptions({
   name: 'IndexPage',
 })
+definePageMeta({
+  middleware: 'auth',
+})
 </script>
 
 <template>
   <el-container min-h="100vh">
-    <router-link to="/docs">
+    <NuxtLink to="/docs">
       docs
-    </router-link>
+    </NuxtLink>
   </el-container>
 </template>

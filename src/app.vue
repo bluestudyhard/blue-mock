@@ -33,12 +33,12 @@ import 'tippy.js/dist/tippy.css'
 </script>
 
 <template>
-  <NuxtLayout>
-    <NuxtLoadingIndicator />
-    <ClientOnly>
+  <ClientOnly>
+    <NuxtLayout>
+      <NuxtLoadingIndicator />
       <NuxtPage />
-    </ClientOnly>
-  </NuxtLayout>
+    </NuxtLayout>
+  </ClientOnly>
 </template>
 
 <style>

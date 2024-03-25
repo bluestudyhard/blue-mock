@@ -1,171 +1,47 @@
 <script setup lang="ts">
-import StarterKit from '@tiptap/starter-kit'
-import type { Editor } from '@tiptap/vue-3'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import Highlight from '@tiptap/extension-highlight'
-import { EditorContent, useEditor } from '@tiptap/vue-3'
-import type { EditorView } from 'prosemirror-view'
-import type { EditorState } from 'prosemirror-state'
-import Placeholder from '@tiptap/extension-placeholder'
-import BubbleMenu from '@tiptap/extension-bubble-menu'
-import TextAlign from '@tiptap/extension-text-align'
-import * as Y from 'yjs'
-import Collaboration from '@tiptap/extension-collaboration'
+import { EditorContent } from '@tiptap/vue-3'
 import tippy from 'tippy.js'
 import { h, render } from 'vue'
-import remixiconUrl from '/remixicon.symbol.svg'
-import MenuBar from '~/components/MenuBar.vue'
 
-const bubbleMenuRef = ref<HTMLElement>() as Ref<HTMLElement>
-const name = ref('')
+import { getEditor } from '~/composables/editor'
+import remixiconUrl from '/remixicon.symbol.svg'
+import loadingSvg from '/loading.svg'
+import MenuBar from '~/components/MenuBar.vue'
+import userStore from '~/stores/user'
+
+const route = useRoute()
+definePageMeta({
+  layout: 'docs',
+})
+const { token } = storeToRefs(userStore())
+const name = ref((route.params as { doc: string }).doc)
+
 const tippyBind = ref<HTMLElement >() as Ref<HTMLElement>
 const isScrolling = inject('isScrolling') as Ref<boolean>
-// 获取路由参数
-const route = useRoute()
-
-const ydoc = new Y.Doc()
-const doc = (route.params as { doc: string }).doc
-name.value = doc
+const curIcon = ref('paragraph')
 const menuPost = ref({ left: 0, top: 0 })
 
-const curIcon = ref('paragraph')
-
-const curIsActive = ref(false)
-const editor = useEditor({
-  content: `
- 
-      `,
-  extensions: [
-    StarterKit,
-    TaskList,
-    Highlight,
-    TaskItem,
-    BubbleMenu.configure({
-      element: bubbleMenuRef.value,
-    }),
-    TextAlign.configure({
-      types: ['heading', 'paragraph'],
-    }),
-    Placeholder.configure({
-      emptyEditorClass: 'is-editor-empty',
-      emptyNodeClass: 'is-empty',
-      considerAnyAsEmpty: true,
-      placeholder: 'write something...',
-    }),
-    Collaboration.configure({
-      document: ydoc,
-    }),
-  ],
-  editable: true, // 是否可编辑
-  autofocus: true, // 自动聚焦 就是页面开始时光标会在编辑器中 start在开头 end在结尾  all 选择整个文档
-  // 输入规则
-
-  onSelectionUpdate: (e) => {
-    isScrolling.value = false
-    tippyBind.value.style.display = 'flex'
-    handleActiveNodeType()
-    handleNodePostion()
-  },
-  onCreate: () => {
-    initMenuItemPost()
-  },
-}) as Ref<Editor>
+const loading = ref(true)
 
 /**
- * @description 获取tippymenu的初始位置
+ * @description 获取编辑器实例
  */
-function initMenuItemPost() {
-  const view = editor?.value?.view as EditorView
 
-  // 初始时拿到编辑器第一行的p标签的坐标
-  const initPost = view.coordsAtPos(1)
+const { editor, ydoc } = getEditor(isScrolling, tippyBind, menuPost, curIcon)
 
-  menuPost.value.top = initPost.top
-  menuPost.value.left = initPost.left - 35
-}
 /**
- * @description 获取当前选中的节点类型 并设置icon 手动isActive
+ * @description 初始化tippy
  */
-function handleActiveNodeType() {
-  const state = editor?.value?.state as EditorState
-  const selection = state.selection
-  const { from: startPos, to: endPos } = selection
-
-  let _cnt = 0
-  let firstType = ''
-  let lastType = ''
-  let level: number | undefined
-  state.doc.nodesBetween(startPos, endPos, (node) => {
-    if (!level)
-      level = node.attrs.level
-
-    // console.log(node)
-    if (_cnt === 0)
-      firstType = node.type.name
-    else
-      lastType = node.type.name
-
-    _cnt++
-  })
-  let type = lastType
-  if (lastType === 'paragraph' || lastType === '' || lastType === 'text')
-    type = firstType
-
-  console.log(type, level)
-  if (type === 'paragraph') {
-    curIcon.value = 'paragraph'
-  }
-  else {
-    curIcon.value = menuList.find(({ attrs }) => {
-      return attrs?.level === level && attrs?.type === type
-    })?.icon || 'paragraph'
-  }
-}
-/**
- * @description 获取每一行编辑器选中的节点的位置
- */
-function handleNodePostion() {
-  const state = editor?.value?.state as EditorState
-  const selection = state.selection
-  const { from: startPos } = selection
-  // 获取编辑器的视图
-  const view = editor?.value?.view as EditorView
-  const editorElement = view.dom
-  // 初始时拿到编辑器第一行的p标签的坐标
-
-  // 获取编辑器的左边距
-  const editorleft = editorElement.offsetLeft
-  menuPost.value.left = editorleft - 30
-
-  // 获取选中元素的坐标
-  const startCoords = view.coordsAtPos(startPos)
-
-  menuPost.value.top = startCoords.top
-}
-
-async function connectToCollab() {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTA5NDg2MDEsImV4cCI6MTcxMTAzNTAwMX0.lVTsxjc13NAIzXbSsthW_fziVHK_rJSEWmbsti75N4c'
-  const { TiptapCollabProvider } = await import('@hocuspocus/provider')
-
-  const provider = new TiptapCollabProvider({
-    name: name.value,
-    appId: 'rm8oj29o',
-    token,
-    document: ydoc,
-  })
-}
-onUnmounted(() => {
-  editor?.value?.destroy()
-})
-
-onMounted(async () => {
+async function init() {
   if (!tippyBind.value || !editor.value)
     return
-  await connectToCollab()
+
+  const store = userStore()
+  token.value = store.getToken()
+  // console.log(token.value)
   const div = document.createElement('div')
   const el = h(MenuBar, {
-    editor: editor.value,
+    editor: editor.value!,
   })
   // el 相当于 <MenuBar :editor="editor.value" @action="(icon)=>{xxx} " />
   render(el, div)
@@ -177,13 +53,47 @@ onMounted(async () => {
     content: div,
     placement: 'left',
   })
+
   // 拿到editor-main的相对位置
   const editorMain = document.querySelector('.editor-main')
   if (editorMain) {
     const { top, left } = editorMain.getBoundingClientRect()
-    console.log(top, left)
+    // console.log(top, left)
   }
+}
+async function connectToCollab(name: string) {
+  const { TiptapCollabProvider } = await import('@hocuspocus/provider')
+
+  const provider = new TiptapCollabProvider({
+    name,
+    appId: 'rm8oj29o',
+    token: token.value as string,
+    document: ydoc,
+    onSynced: () => {
+      loading.value = true
+      if (!ydoc.getMap('config').get('initialContentLoaded') && editor.value) {
+        ydoc.getMap('config').set('initialContentLoaded', true)
+        editor.value.commands.setContent(`
+        `)
+      }
+    },
+  },
+  )
+}
+/*
+  * @description watchImmediate的用法是在页面加载时立即执行一次，然后在后续的变化中执行
+*/
+// watchImmediate(route.params.doc, async () => {
+//   await init()
+//   editor.value = _editor.value
+//   await connectToCollab(name.value)
+// })
+
+onMounted(async () => {
+  await init()
+  await connectToCollab(name.value)
 })
+
 // 当检测到页面有滚动时，menu-item消失
 watchEffect(() => {
   if (isScrolling.value && tippyBind.value)
@@ -192,24 +102,28 @@ watchEffect(() => {
 </script>
 
 <template>
-  <h2>{{ name }}  </h2>
-  <div class="editor-main">
-    <BubbleMenu
+  <div
+
+    class="editor-main"
+    element-loading-text="Loading..."
+    element-loading-background="#fff"
+  >
+    <!-- <bubble-menu
       v-if="editor"
-      ref="bubbleMenuRef"
+      class="bubble-menu"
       :editor="editor"
       :tippy-options="{ duration: 100 }"
     >
-      <button :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()">
-        bold
+      <button :class="{ 'is-active': editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()">
+        Bold
       </button>
-      <button :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()">
-        italic
+      <button :class="{ 'is-active': editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()">
+        Italic
       </button>
-      <button :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()">
-        strike
+      <button :class="{ 'is-active': editor?.isActive('strike') }" @click="editor?.chain().focus().toggleStrike().run()">
+        Strike
       </button>
-    </BubbleMenu>
+    </bubble-menu> -->
     <div class="editor">
       <div
         ref="tippyBind"
@@ -313,6 +227,10 @@ h2 {
 
 <style lang="scss">
 /* Basic editor styles */
+.tippy-box {
+  background-color: #ececec;
+}
+
 .tiptap {
   > * + * {
     margin-top: 0.75em;

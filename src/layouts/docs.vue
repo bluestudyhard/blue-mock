@@ -1,9 +1,13 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import asides from '~/layouts/asides.vue'
-import mains from '~/layouts/mains.vue'
+// import asides from '~/layouts/asides.vue'
+// import mains from '~/layouts/mains.vue'
+// import headers from '~/layouts/headers.vue'
 
-defineOptions({
-  name: 'Docs',
+const route = useRoute()
+const name = ref('')
+watchEffect(() => {
+  if ('doc' in route.params)
+    name.value = route.params.doc
 })
 const el = ref<HTMLElement | null>(null)
 const { isScrolling } = useScroll(el)
@@ -12,14 +16,14 @@ provide('isScrolling', isScrolling)
 
 <template>
   <el-container class="container">
-    <asides />
+    <docs-asides />
 
     <el-container>
       <el-header>
-        <headers />
+        <docs-headers />
       </el-header>
       <el-main ref="el">
-        <mains />
+        <docs-mains :key="name" />
       </el-main>
     </el-container>
   </el-container>
