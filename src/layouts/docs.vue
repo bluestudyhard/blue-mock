@@ -1,14 +1,6 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-// import asides from '~/layouts/asides.vue'
-// import mains from '~/layouts/mains.vue'
-// import headers from '~/layouts/headers.vue'
-
 const route = useRoute()
-const name = ref('')
-watchEffect(() => {
-  if ('doc' in route.params)
-    name.value = route.params.doc
-})
+
 const el = ref<HTMLElement | null>(null)
 const { isScrolling } = useScroll(el)
 provide('isScrolling', isScrolling)
@@ -23,7 +15,9 @@ provide('isScrolling', isScrolling)
         <docs-headers />
       </el-header>
       <el-main ref="el">
-        <docs-mains :key="name" />
+        <!-- <docs-mains :key="name" /> -->
+        <!-- <router-view /> -->
+        <slot />
       </el-main>
     </el-container>
   </el-container>

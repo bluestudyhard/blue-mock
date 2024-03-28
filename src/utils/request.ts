@@ -7,7 +7,9 @@ export function createService(baseURL: string) {
   service.interceptors.request.use((config) => {
     return config
   })
-
+  service.interceptors.response.use((response) => {
+    return response
+  })
   const request = {
     get<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
       return service.get(url, config)
@@ -25,5 +27,6 @@ export function createService(baseURL: string) {
       return service.delete(url, config)
     },
   }
+
   return request
 }

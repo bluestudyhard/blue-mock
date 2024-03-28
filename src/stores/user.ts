@@ -6,6 +6,7 @@ const userStore = defineStore('user', {
     token: '' as tokenType,
     userInfo: {} as userDisplay,
     authenticated: false,
+    logoutTimer: null as NodeJS.Timeout | null,
   }),
   actions: {
 
@@ -25,11 +26,15 @@ const userStore = defineStore('user', {
       this.token = res.data.token
       this.authenticated = true
       this.userInfo = res.data.user
+      this.logoutTimer = setTimeout(() => {
+        this.logout()
+      }, 1000 * 60 * 60 * 24 * 2)
       return res
     },
     async logout() {
       this.$reset()
       localStorage.removeItem('token')
+      navigateTo('/login')
     },
     // 得到token
     getToken() {
@@ -41,7 +46,7 @@ const userStore = defineStore('user', {
     },
     // 是否已经登录
     isAuthenticated() {
-      if (this.token && this.authenticated)
+      if (this.token !== '' && this.authenticated)
         return true
       return false
     },

@@ -1,4 +1,4 @@
-import type { docsListType } from '~/types'
+import type { docsListDeleteType, docsListType } from '~/types'
 import { createService } from '~/utils/request'
 
 const api = {
@@ -18,4 +18,35 @@ export async function getDocsList() {
   })
 
   return res.data
+}
+
+export async function _createDoc(name: string) {
+  const res = await service.post<docsListType>('', {
+    name,
+  }, {
+    headers: {
+      Authorization: appSecret,
+    },
+  })
+
+  return res.data
+}
+
+// 删除文档根据文件名
+export async function _deleteDoc(name: string) {
+  console.log(name)
+  try {
+    // 查看实际请求地址
+    console.log(`${api.DOCUMENTS}${name}`)
+    const res = await service.delete<docsListDeleteType>(`${name}`, {
+      headers: {
+        Authorization: appSecret,
+      },
+    })
+    console.log(res)
+    // return res.data
+  }
+  catch (e) {
+    console.log(e)
+  }
 }

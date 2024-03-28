@@ -2,19 +2,10 @@
 definePageMeta({
   layout: 'docs',
 })
-
-const route = useRoute()
-
-watchEffect(() => {
-  console.log('hi', route.fullPath)
-})
-
-onMounted(() => {
-  console.log('hi mounted')
-})
 </script>
 
 <template>
+  <h1>hi index</h1>
   <router-link to="/hi/fish/">
     hi/fish
   </router-link>

@@ -24,3 +24,10 @@ export function verifyJwt(token: string) {
     return false
   }
 }
+
+// 更新jwt 分享文档编辑权限
+export function updateJwt(data: any) {
+  let jwt = ''
+  jwt = jsonwebtoken.sign(data, userSecret!, { expiresIn: '2 days' })
+  return jwt
+}

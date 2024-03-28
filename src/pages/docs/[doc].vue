@@ -5,16 +5,19 @@ import { h, render } from 'vue'
 
 import { getEditor } from '~/composables/editor'
 import remixiconUrl from '/remixicon.symbol.svg'
-import loadingSvg from '/loading.svg'
+
 import MenuBar from '~/components/MenuBar.vue'
 import userStore from '~/stores/user'
 
-const route = useRoute()
+const route = useRoute<'docs-doc'>()
+
 definePageMeta({
   layout: 'docs',
 })
+
 const { token } = storeToRefs(userStore())
-const name = ref((route.params as { doc: string }).doc)
+
+const name = ref('')
 
 const tippyBind = ref<HTMLElement >() as Ref<HTMLElement>
 const isScrolling = inject('isScrolling') as Ref<boolean>
@@ -70,7 +73,8 @@ async function connectToCollab(name: string) {
     token: token.value as string,
     document: ydoc,
     onSynced: () => {
-      loading.value = true
+      console.log('connected')
+      loading.value = false
       if (!ydoc.getMap('config').get('initialContentLoaded') && editor.value) {
         ydoc.getMap('config').set('initialContentLoaded', true)
         editor.value.commands.setContent(`
@@ -79,51 +83,43 @@ async function connectToCollab(name: string) {
     },
   },
   )
+  provider.connect().catch((e) => {
+    console.error(e)
+  })
 }
 /*
   * @description watchImmediate的用法是在页面加载时立即执行一次，然后在后续的变化中执行
 */
-// watchImmediate(route.params.doc, async () => {
-//   await init()
-//   editor.value = _editor.value
-//   await connectToCollab(name.value)
-// })
 
 onMounted(async () => {
+  name.value = route.params.doc
+  console.log('doc name', name.value)
   await init()
+
   await connectToCollab(name.value)
 })
 
 // 当检测到页面有滚动时，menu-item消失
 watchEffect(() => {
-  if (isScrolling.value && tippyBind.value)
+  if (isScrolling?.value && tippyBind.value)
     tippyBind.value.style.display = 'none'
 })
+const dialogVisible = ref(false)
 </script>
 
 <template>
+  <div class="share">
+    <el-button @click="dialogVisible = true">
+      click me
+    </el-button>
+    <share v-model="dialogVisible" />
+  </div>
   <div
-
+    v-loading="loading"
     class="editor-main"
     element-loading-text="Loading..."
     element-loading-background="#fff"
   >
-    <!-- <bubble-menu
-      v-if="editor"
-      class="bubble-menu"
-      :editor="editor"
-      :tippy-options="{ duration: 100 }"
-    >
-      <button :class="{ 'is-active': editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()">
-        Bold
-      </button>
-      <button :class="{ 'is-active': editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()">
-        Italic
-      </button>
-      <button :class="{ 'is-active': editor?.isActive('strike') }" @click="editor?.chain().focus().toggleStrike().run()">
-        Strike
-      </button>
-    </bubble-menu> -->
     <div class="editor">
       <div
         ref="tippyBind"

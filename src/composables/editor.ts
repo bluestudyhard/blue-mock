@@ -10,7 +10,6 @@ import type { EditorState } from 'prosemirror-state'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import Collaboration from '@tiptap/extension-collaboration'
-import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 
 export function getEditor(
   isScrolling: Ref<boolean>,
@@ -29,13 +28,7 @@ export function getEditor(
       TaskList,
       Highlight,
       TaskItem,
-      BubbleMenu.configure({
-        element: document.querySelector('.bubble-menu') as HTMLElement,
-        tippyOptions: {
-          placement: 'right-start',
-          offset: [0, 20],
-        },
-      }),
+
       Typography,
       TextAlign.configure({
         types: ['heading', 'paragraph'],

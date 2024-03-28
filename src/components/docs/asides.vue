@@ -21,25 +21,48 @@ function go(name: string) {
 </script>
 
 <template>
-  <el-aside border="r" h="full" min-h="100vh" p="x-4 y-5" class="aside" text-center>
-    <h1>mk云文档</h1>
-    <div>
-      <el-menu>
-        <template v-for="(doc) in docsList" :key="doc.name">
-          <el-menu-item w="full" class="menu-item">
-            <span
-              text-center
-              text="1rem"
-              @click.prevent="go(doc.name)"
-            >
-              {{ doc.name }}
-            </span>
+  <el-aside border="r" h="full" min-h="100vh" p=" y-2" class="aside" width="250px">
+    <h1 text-center>
+      mk云文档
+    </h1>
+
+    <el-row class="tac">
+      <el-col flex-col>
+        <el-menu
+          default-active="3"
+          class="el-menu-vertical-demo"
+        >
+          <el-menu-item index="1">
+            <el-icon><ElIconHouse /></el-icon>
+            <span @click="navigateTo('/')">主页</span>
           </el-menu-item>
-        </template>
-      </el-menu>
-    </div>
+          <el-menu-item index="2">
+            <el-icon><ElIconMemo /></el-icon>
+            <span>多维表格</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <el-icon><ElIconDocument /></el-icon>
+            <span @click="navigateTo('/docs')">云文档</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <el-icon><ElIconSetting /></el-icon>
+            <span>Navigator Four</span>
+          </el-menu-item>
+        </el-menu>
+      </el-col>
+    </el-row>
   </el-aside>
 </template>
+
+<style>
+ol,
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
 
 <style scoped lang="scss">
 .aside {

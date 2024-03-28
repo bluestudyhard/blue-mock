@@ -14,3 +14,21 @@ export interface docsListType {
   created_at?: string
   updated_at?: string
 }
+
+interface docsToolBarItem {
+  name: string
+  description: string
+  method?: any
+}
+export interface docsToolBarType {
+  name: string
+  description: string
+  icon: string
+  color: string
+  dropDownMenu?: docsToolBarItem[]
+}
+
+export interface docsListDeleteType {
+  // 状态码
+  code: number
+}
